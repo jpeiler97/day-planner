@@ -1,10 +1,15 @@
 var timeText = $('#currentDay');
 var hourBlock = $('.hour');
-timeText.textContent = moment().format('MMMM Do, YYYY');
+$('#currentDay').text(moment().format('MMMM Do, YYYY'));
 var timeblockCount = $('.blockArea').children().length;
+var currentHour = moment();
 
 for (i = 0; i < timeblockCount; i++) {
-	if ($('.blockArea').children().eq(i).children('.hour').text().substring(0, 2) === moment().format('HH')) {
+	var blockHour = moment($('.blockArea').children().eq(i).children('.hour').text(), 'HH A');
+	console.log(' ');
+	console.log('Block hour:' + blockHour);
+	console.log('Current hour:' + currentHour);
+	if (blockHour.isSame(currentHour, 'hour') === true) {
 		$('.blockArea')
 			.children()
 			.eq(i)
@@ -12,7 +17,9 @@ for (i = 0; i < timeblockCount; i++) {
 			.siblings('.past')
 			.addClass('present')
 			.toggleClass('.present');
-	} else if ($('.blockArea').children().eq(i).children('.hour').text().substring(0, 2) > moment().format('HH')) {
+	} else if (blockHour.isBefore(currentHour, 'hour') === true) {
+		$('.blockArea').children().eq(i).children('.hour').siblings('.past').addClass('past').toggleClass('.past');
+	} else if (blockHour.isAfter(currentHour, 'hour') === true) {
 		$('.blockArea').children().eq(i).children('.hour').siblings('.past').addClass('future').toggleClass('.future');
 	}
 }
