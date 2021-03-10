@@ -1,6 +1,11 @@
+//Displays current day at top of page
 $('#currentDay').text(moment().format('MMMM Do, YYYY'));
+//Gets number of time blocks
 var timeblockCount = $('.blockArea').children().length;
+//Variable for current time
 var currentHour = moment();
+
+//Object representing each hour (9-5) as a key, used later to store text into local storage
 var savedText = {
 	nine: '',
 	ten: '',
@@ -45,9 +50,14 @@ function init() {
 				.toggleClass('.future');
 		}
 	}
+	//Adds event listener to each save button, which stores the text in a given time block in an object in local storage
 	saveButton.on('click', function() {
+		//Iterates through each time block
 		for (i = 0; i < Object.keys(savedText).length; i++) {
+			//Saves current key in objects array ('nine', 'ten', etc.) as variable
 			var currentKey = Object.keys(savedText)[i];
+
+			//If the saved button's class matches the current key, save the text to local storage with that current key as its name
 			if ($(this).siblings('textarea').hasClass(currentKey)) {
 				localStorage.setItem(`savedText ${currentKey}`, $(this).siblings('textarea').val());
 			}
@@ -55,4 +65,22 @@ function init() {
 	});
 }
 
+//Gets saved text from local storage and displays on corresponding textareas
+function getText() {
+	//Iterates through each time block
+	for (i = 0; i < Object.keys(savedText).length; i++) {
+		//Saves current key in objects array ('nine', 'ten', etc.) as variable
+		var currentKey = Object.keys(savedText)[i];
+		//Defines new variable currentBlock as the element with the class matching the current key
+		var currentBlock = $(`.${currentKey}`);
+
+		//Sets text to be displayed as the time block's corresponding string gotten from local storage
+		var storedText = localStorage.getItem(`savedText ${currentKey}`);
+		//Displays storedText in the current time block
+		currentBlock.val(storedText);
+	}
+}
+
+//Calling functions
 init();
+getText();
